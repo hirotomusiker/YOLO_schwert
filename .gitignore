@@ -1,0 +1,5 @@
+checkpoints
+*.csv
+*.zip
+*.pyc
+weights

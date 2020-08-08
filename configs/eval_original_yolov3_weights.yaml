@@ -1,0 +1,8 @@
+MODEL:
+  WEIGHTS: "weights/yolov3.weights"
+DATA:
+  TRAIN_DIR: "val2017"
+  TRAIN_JSON: 'instances_val5k.json' # to reduce loading time
+  VAL_JSON: 'instances_val5k.json'
+TEST:
+  INTERVAL: 1000

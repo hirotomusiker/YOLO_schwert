@@ -1,0 +1,7 @@
+MODEL:
+  WEIGHTS: "" #weights/darknet53.conv.74"
+DATA:
+  TRAIN_DIR: "val2017"
+  TRAIN_JSON: 'instances_val2017.json'
+TEST:
+  INTERVAL: 1000
