@@ -278,8 +278,12 @@ class YOLOLayer(nn.Module):
             target[b, ai, gt_j, gt_i, 3] = torch.log(
                         truth_h_all[b, ti] / self.dtype(self.masked_anchors)[ai, 1] + 1e-16)
             target[b, ai, gt_j, gt_i, 4] = 1
-            tgt_scale[b, ai, gt_j, gt_i, 0] = torch.sqrt(
+            s = torch.sqrt(
                 2 - torch.mul(truth_w_all[b, ti], truth_h_all[b, ti]) / fsize / fsize)
+            tgt_scale[b, ai, gt_j, gt_i, 0] = s
+            tgt_scale[b, ai, gt_j, gt_i, 1] = s
+
+            target[b, ai, gt_j, gt_i, 5 + labels[b, ti, 0].long()] = 1
             """
             target[b, ai, gt_j, gt_i, 4] = giou(
                 xywh_to_xyxy(output[b, ai, gt_j, gt_i, :4]),

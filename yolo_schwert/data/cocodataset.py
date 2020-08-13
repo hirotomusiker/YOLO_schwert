@@ -25,6 +25,7 @@ class COCODataset(Dataset):
         self.data_dir = Path(cfg.DATA.ROOT_DIR).joinpath(img_dir)
         self.data_dir_2 = Path(cfg.DATA.ROOT_DIR).joinpath("train2017")
         annot_path = str(Path(cfg.DATA.ROOT_DIR).joinpath('annotations').joinpath(annot_file))
+
         self.coco = COCO(annot_path)
         self.train = train
         self.ids = self.coco.getImgIds()
@@ -123,7 +124,7 @@ class COCODataset(Dataset):
         padded_labels = np.zeros((self.max_labels, 5))
         if len(labels) > 0:
             labels = np.stack(labels)
-            labels = label2yolobox(labels, info_img, self.img_size, lrflip, vflip, trans, self.box_jitter)
+            labels = label2yolobox(labels, info_img, self.img_size, lrflip)#, vflip, trans, self.box_jitter)
             padded_labels[range(len(labels))[:self.max_labels]
                           ] = labels[:self.max_labels]
         padded_labels = torch.from_numpy(padded_labels)

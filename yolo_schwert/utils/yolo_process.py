@@ -4,7 +4,7 @@ import torch
 from .boxes import nms
 
 
-def label2yolobox(labels, info_img, maxsize, lrflip, vflip, trans, jitter, min_size = 2.):
+def label2yolobox(labels, info_img, maxsize, lrflip):#, vflip, trans, jitter, min_size = 2.):
     """
     Transform coco labels to yolo box labels
     Args:

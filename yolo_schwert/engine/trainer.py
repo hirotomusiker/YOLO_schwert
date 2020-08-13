@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from yolo_schwert.modeling.build import build_model
@@ -19,6 +20,7 @@ class Trainer:
         else:
             self.accum_size = 1
         self.dataloader = self.build_train_loader(cfg)
+        self.dataiterator = iter(self.dataloader)
         self.optimizer = self.build_optimizer(cfg)
         self.max_iter = cfg.SOLVER.MAX_ITER
         self.subdivision = cfg.SOLVER.SUBDIVISION
@@ -35,11 +37,13 @@ class Trainer:
             optimizer=self.optimizer,
             scheduler=self.scheduler,
         )
+        self.random_resize = cfg.AUG.RANDOM_RESIZE
 
         self.iter_i = 0
         if cfg.MODEL.WEIGHTS:
             checkpoint = self.checkpointer.load(cfg.MODEL.WEIGHTS)
             self.iter_i = checkpoint.get("iteration", -1) + 1
+
 
 
     @classmethod
@@ -68,7 +72,6 @@ class Trainer:
                               dampening=0, weight_decay=decay * self.accum_size)
         return optimizer
 
-
     @classmethod
     def build_evaluator(cls, cfg):
         return build_evaluator('COCO', cfg)
@@ -76,21 +79,17 @@ class Trainer:
     def train(self):
         torch.autograd.set_detect_anomaly(True)
         self.model.train()
-        data_iterator = iter(self.dataloader)
         # start training loop
+
         for iter_i in range(self.iter_i, self.max_iter):
             self.iter_i = iter_i
-            if self.iter_i % self.eval_interval == 0:# and self.iter_i > 0:
-                eval_results = self.evaluator.evaluate(self.model)
-                self.log_tfboard(eval_results, prefix='val')
-                self.model.train()
             self.optimizer.zero_grad()
             for inner_iter_i in range(self.subdivision):
                 try:
-                    imgs, targets, _, _ = next(data_iterator)  # load a batch
+                    imgs, targets, _, _ = next(self.dataiterator)  # load a batch
                 except StopIteration:
-                    data_iterator = iter(self.dataloader)
-                    imgs, targets, _, _ = next(data_iterator)  # load a batch
+                    self.dataiterator = iter(self.dataloader)
+                    imgs, targets, _, _ = next(self.dataiterator)  # load a batch
                 imgs = imgs.to(self.device).float()
                 targets = targets.to(self.device).float().detach()
                 loss_dict = self.model(imgs, targets)
@@ -120,13 +119,20 @@ class Trainer:
             additional_state = {"iteration": self.iter_i}
             self.checkpointer.save('snapshot_latest', **additional_state)
 
+        # random resizing. this will be implemented as a transform module
+        if self.iter_i % 10 == 0 and self.iter_i > 0 and self.random_resize:
+            imgsize = (np.random.randint(10) % 10 + 10) * 32
+            self.dataloader.dataset.img_size = imgsize
+            self.dataiterator = iter(self.dataloader)
+
     def log_losses(self, iter_i, loss_dict):
         # TODO: log smoothed losses
         current_lr = self.scheduler.get_lr()[0] * self.accum_size
         # current_lr = scheduler.get_lr()[0] * batch_size * subdivision
-        print('Iter {} / {}, lr: {:.7f} '
+        print('Iter {} / {}, lr: {:.7f}, imagesize: {}, '
               'Losses: xy: {:.3f}, wh: {:.3f}, obj: {:.3f}, cls: {:.3f} total: {:.3f}'.format(
             iter_i, self.max_iter, current_lr,
+            self.dataloader.dataset.img_size,
             loss_dict['xy'], loss_dict['wh'],
             loss_dict['obj'], loss_dict['cls'],
             loss_dict['total_loss']),
@@ -134,7 +140,6 @@ class Trainer:
         )
 
     def log_tfboard(self, log_dict, prefix=None):
-        print(log_dict)
         for k, v in log_dict.items():
             name = prefix + '/' + k
             self._writer.add_scalar(name, v, self.iter_i)

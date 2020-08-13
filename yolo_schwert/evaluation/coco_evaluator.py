@@ -94,7 +94,7 @@ class COCOEvaluator():
             cocoEval.summarize()
             return self.parse_stats_to_dict(cocoEval.stats)
         else:
-            return []
+            return {}
 
     def parse_stats_to_dict(self, stats):
         keys = {'AP50:95', 'AP50', 'AP75'

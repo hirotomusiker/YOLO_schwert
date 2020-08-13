@@ -2,7 +2,7 @@ import _init_paths
 import argparse
 from yolo_schwert.engine.trainer import Trainer
 from yolo_schwert.data.cocodataset import *
-
+import random
 
 from yolo_schwert.config import get_cfg
 
@@ -21,6 +21,15 @@ def main():
     """
     YOLOv3 trainer. See README for details.
     """
+    def setup_seed(seed):
+        torch.manual_seed(seed)
+
+        torch.cuda.manual_seed_all(seed)
+        np.random.seed(seed)
+        random.seed(seed)
+        torch.backends.cudnn.deterministic = True
+    setup_seed(200)
+
     args = parse_args()
     print("Setting Arguments.. : ", args)
     cuda = torch.cuda.is_available()

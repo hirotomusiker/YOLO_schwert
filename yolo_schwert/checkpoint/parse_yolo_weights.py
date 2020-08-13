@@ -142,5 +142,6 @@ def parse_yolo_weights(model, weights_path, initflag=False):
     for m in model.neck.block_4:
         offset, weights = parse_modules(m, weights, offset, initflag=initflag)
     offset, weights = parse_yolo_block(model.dense_head.yolo_layer_P3, weights, offset, initflag=initflag)
+    print("model {} has been loaded: {} / {}".format(weights_path, offset, len(weights)))
     return {"model": model.state_dict()}
 

@@ -54,7 +54,7 @@ _C.SOLVER.SUBDIVISION = 16
 
 _C.INPUT = CN()
 _C.INPUT.IMG_SIZES = (416,)
-_C.INPUT.IMGSIZE = 416
+_C.INPUT.IMGSIZE = 608
 
 #######################
 # Dataloader Settings #
@@ -70,13 +70,14 @@ _C.DATA.VAL_JSON = 'instances_val2017.json'
 # Augmentation Settings #
 #########################
 _C.AUG = CN()
-_C.AUG.JITTER = 0.0
+_C.AUG.JITTER = 0.3
 _C.AUG.BOX_JITTER = 0.0
 _C.AUG.RANDOM_PLACING = True
+_C.AUG.RANDOM_RESIZE = True
 _C.AUG.HUE = 0.1
 _C.AUG.SATURATION = 1.5
 _C.AUG.EXPOSURE = 1.5
-_C.AUG.LRFLIP = False
+_C.AUG.LRFLIP = True
 _C.AUG.RANDOM_DISTORT = False
 
 # New Augmentations
@@ -100,6 +101,6 @@ _C.TEST.INTERVAL = 2000
 # Others #
 ##########
 _C.OUTPUT_DIR = "results"
-_C.NUM_WORKERS = 1
+_C.NUM_WORKERS = 0
 _C.LOG_INTERVAL = 10
 _C.CHECKPOINT_INTERVAL = 100
