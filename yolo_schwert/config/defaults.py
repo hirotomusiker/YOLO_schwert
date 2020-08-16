@@ -53,7 +53,7 @@ _C.SOLVER.SUBDIVISION = 16
 #############################
 
 _C.INPUT = CN()
-_C.INPUT.IMG_SIZES = (416,)
+_C.INPUT.IMG_SIZES = (320, 352, 384, 416, 448, 480, 512, 544, 576, 608)
 _C.INPUT.IMGSIZE = 608
 
 #######################

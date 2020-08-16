@@ -1,7 +1,4 @@
 MODEL:
-  WEIGHTS: "" #weights/darknet53.conv.74"
-DATA:
-  TRAIN_DIR: "val2017"
-  TRAIN_JSON: 'instances_val2017.json'
+  WEIGHTS: "weights/darknet53.conv.74"
 TEST:
   INTERVAL: 1000
