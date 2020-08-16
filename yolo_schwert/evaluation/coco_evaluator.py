@@ -100,6 +100,12 @@ class COCOEvaluator():
         keys = {'AP50:95', 'AP50', 'AP75'
                 , 'AP50:95_small', 'AP50:95_medium', 'AP50:95_large'
         } # drop ARs
-        return {k:v for k, v in zip(keys, stats)}
+        results = {'AP50:95': stats[0],
+                   'AP50': stats[1],
+                   'AP75': stats[2],
+                   'AP50:95_small': stats[3],
+                   'AP50:95_medium': stats[4],
+                   'AP50:95_large': stats[5]}
+        return results
 
 
