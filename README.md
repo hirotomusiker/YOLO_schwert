@@ -8,18 +8,18 @@ This repo will be modified without notice ;) </b>
 ## Development
 
 #### top-priority:
+- [ ] refactor yolo layer
+- [ ] docstring 'em all
+- [x] YOLOv3_PyTorch reproduction - training <- verified on 10k-iter training
 - [x] decompose the YOLOv3 model into backbone / neck / head
 - [x] detectron / mmdet - like repo structure
 - [x] YOLOv3_PyTorch reproduction - inference
-- [ ] YOLOv3_PyTorch reproduction - training
 - [x] verify checkpoint / resume
 - [x] evaluate script
 - [x] demo script using predictor module
 - [x] visualizer
 - [x] all-gpu processing at yolo layer
-- [ ] refactor yolo layer
 - [x] tfboard output
-- [ ] docstring 'em all
 
 #### new features:
 - [ ] SPP
@@ -34,6 +34,7 @@ This repo will be modified without notice ;) </b>
 - [ ] fvcore's history buffer
 - [ ] warmupcosine scheduler
 - [ ] multi-gpu training
+- [ ] unittests
 
 #### optional: 
 - [ ] model registry
